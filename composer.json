@@ -1,0 +1,11 @@
+{
+    "name": "root/app",
+    "autoload": {
+        "psr-4": {
+            "Root\\App\\": "src/"
+        }
+    },
+    "require": {
+        "symfony/string": "^7.3"
+    }
+}
