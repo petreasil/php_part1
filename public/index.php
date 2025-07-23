@@ -15,7 +15,7 @@ try {
 } catch (Exception $e) {
     echo $e->getMessage();
 }
-echo 'Done';
+echo "Done prepend header.<br>";
 
 // try {
 //     $tool1->addIndexingColumn($inputFile, $outputFile, $headerRow);
@@ -29,4 +29,4 @@ try {
 } catch (Exception $e) {
     echo $e->getMessage();
 }
-echo 'Done reorder columns';
+echo "Done reorder columns. <br>";
