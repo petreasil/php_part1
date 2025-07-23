@@ -41,29 +41,27 @@ class tool1
 
     public function reorderColumns($inputFile, $outputFile, $newColumnOrder)
     {
-        $csv = [];
-        if (($handle = fopen($inputFile, 'r')) !== FALSE) {
-            $header = fgetcsv($handle, 1000, ',');
-            while (($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
-                $csv[] = array_combine($header, $data);
-            }
-            fclose($handle);
-        }
+        $fpIn = fopen($inputFile, 'r');
+        $fpOut = fopen($outputFile, 'w');
 
-        $output = [];
-        foreach ($csv as $row) {
-            $newRow = [];
+        $originalHeader = fgetcsv($fpIn, 0, ',', '"', '\\');
+        $headerIndexMap = array_flip($originalHeader);
+
+        fputcsv($fpOut, $newColumnOrder, ',', '"', '\\');
+        $headerIndexMap = array_flip($originalHeader);
+
+        while (($row = fgetcsv($fpIn, 0, ',', '"', '\\')) !== false) {
+            // Reorder columns according to $newOrder
+            $reorderedRow = [];
             foreach ($newColumnOrder as $column) {
-                $newRow[$column] = $row[$column];
+                $reorderedRow[] = $row[$headerIndexMap[$column]];
             }
-            $output[] = $newRow;
+            // Write reordered row to output file
+            fputcsv($fpOut, $reorderedRow, ',', '"', '\\');
         }
 
-        $fp = fopen($outputFile, 'w');
-        fputcsv($fp, $newColumnOrder);
-        foreach ($output as $row) {
-            fputcsv($fp, $row);
-        }
-        fclose($fp);
+        fclose($fpIn);
+        fclose($fpOut);
+        return $this;
     }
 }
