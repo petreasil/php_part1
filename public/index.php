@@ -9,6 +9,7 @@ $inputFile = 'input.csv';
 $outputFile = 'output.csv';
 $headerRow = ['TASK', 'NAME', 'EMAIL', 'STATUS', 'CREATED_AT', 'UPDATED_AT', 'DELETED_AT', "FILED1", "FILED2"];
 $reorder = ['DELETED_AT', "FILED1", "FILED2", 'TASK', 'NAME', 'EMAIL', 'STATUS', 'CREATED_AT', 'UPDATED_AT',];
+$remove = ["FILED1", "FILED2"];
 $tool1 = new tool1();
 try {
     $tool1->prependHeaderRow($inputFile, $outputFile, $headerRow);
@@ -30,3 +31,10 @@ try {
     echo $e->getMessage();
 }
 echo "Done reorder columns. <br>";
+
+try {
+    $tool1->removeColumn($inputFile, $outputFile, $remove);
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+echo "Done remove columns.";

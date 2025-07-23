@@ -64,4 +64,44 @@ class tool1
         fclose($fpOut);
         return $this;
     }
+
+    public function removeColumn($inputFile, $outputFile, $columnToRemove)
+    {
+        $fpIn = fopen($inputFile, 'r');
+        $fpOut = fopen($outputFile, 'w');
+        $header = fgetcsv($fpIn, 0, ',', '"', '\\');
+        $headerIndexMap = array_flip($header);
+        $indexesToRemove = [];
+        foreach ($columnToRemove as $col) {
+            if (is_int($col)) {
+                $indexesToRemove[] = $col;
+            } elseif (isset($headerIndexMap[$col])) {
+                $indexesToRemove[] = $headerIndexMap[$col];
+            } else {
+                throw new \Exception("Column '$col' not found.\n");
+            }
+        }
+
+        $indexesToRemove = array_unique($indexesToRemove);
+        rsort($indexesToRemove);
+
+        // Create filtered header
+        $filteredHeader = $header;
+        foreach ($indexesToRemove as $index) {
+            unset($filteredHeader[$index]);
+        }
+        fputcsv($fpOut, array_values($filteredHeader), ',', '"', '\\');
+
+        // Process each row
+        while (($row = fgetcsv($fpIn, 0, ',', '"', '\\')) !== false) {
+            foreach ($indexesToRemove as $index) {
+                unset($row[$index]);
+            }
+            fputcsv($fpOut, array_values($row), ',', '"', '\\');
+        }
+        fclose($fpIn);
+        fclose($fpOut);
+        return $this;
+    }
+
 }
