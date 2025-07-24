@@ -43,4 +43,14 @@ class EncryptionService
         }
         return $decrypted;
     }
+
+    public function setPrivateKey(string $privateKey): void
+    {
+        $this->privateKey = $privateKey;
+    }
+
+    public function setPublicKey(string $publicKey): void
+    {
+        $this->publicKey = $publicKey;
+    }
 }

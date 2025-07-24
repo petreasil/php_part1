@@ -22,6 +22,7 @@ $headerRow = ['TASK', 'NAME', 'EMAIL', 'STATUS', 'CREATED_AT', 'UPDATED_AT', 'DE
 $headerId = ["ID"];
 $reorder = ['DELETED_AT', "FILED1", "FILED2", 'TASK', 'NAME', 'EMAIL', 'STATUS', 'CREATED_AT', 'UPDATED_AT',];
 $remove = ["FILED1", "FILED2"];
+
 //keys for encryption
 
 $config = [
@@ -36,8 +37,9 @@ openssl_pkey_export($privateKeyResource, $privateKey);
 $keyDetails = openssl_pkey_get_details($privateKeyResource);
 $publicKey = $keyDetails["key"];
 
-echo "Private Key:\n$privateKey\n";
-echo "Public Key:\n$publicKey\n";
+file_put_contents("private_key.pem", $privateKey);
+file_put_contents("public_key.pem", $publicKey);
+//end keys
 
 $first = new CsvPrependHeader($headerRow);
 try {
