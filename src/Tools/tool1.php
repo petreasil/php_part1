@@ -1,31 +1,30 @@
 <?php
 namespace Root\App\Tools;
 
-class tool1
+class Tool1
 {
-    public function prependHeaderRow($inputFile, $outputFile, $headerRow)
+
+    public function prependHeaderRow(string $inputFile, string $outputFile, array $headerRow): static
     {
-        $fpIn = fopen($inputFile, 'r');
-        $fpOut = fopen($outputFile, 'w');
+        $fpIn = fopen(filename: $inputFile, mode: 'r');
+        $fpOut = fopen(filename: $outputFile, mode: 'w');
 
-        // Write the header row
-        fputcsv($fpOut, $headerRow, ',', '"', '\\');
+        fputcsv(stream: $fpOut, fields: $headerRow, separator: ',', enclosure: '"', escape: '\\');
 
-        // Copy the rest of the file
-        while (($row = fgetcsv($fpIn, 0, ',', '"', '\\')) !== FALSE) {
-            fputcsv($fpOut, $row, ',', '"', '\\');
+        while (($row = fgetcsv(stream: $fpIn, length: 0, separator: ',', enclosure: '"', escape: '\\')) !== FALSE) {
+            fputcsv(stream: $fpOut, fields: $row, separator: ',', enclosure: '"', escape: '\\');
         }
 
-        fclose($fpIn);
-        fclose($fpOut);
+        fclose(stream: $fpIn);
+        fclose(stream: $fpOut);
         return $this;
     }
 
-    public function addIndexingColumn($inputFile, $outputFile, $indexName)
+    public function addIndexingColumn(string $inputFile, string $outputFile, array $indexName): static
     {
         $fpIn = fopen($inputFile, 'r');
         $fpOut = fopen($outputFile, 'w');
-
+        fputcsv(stream: $fpOut, fields: $indexName, separator: ',', enclosure: '"', escape: '\\');
         $index = 1;
         while (($row = fgetcsv($fpIn, 0, ',', '"', '\\')) !== FALSE) {
             // Add the indexing column
