@@ -8,12 +8,14 @@ use Root\App\Tools\CsvAddIndexColumn;
 use Root\App\Tools\CsvColumnRemoval;
 use Root\App\Tools\CsvReorderColumn;
 use Root\App\Tools\CsvTruncateColumn;
+use Root\App\Tools\CsvReformatDate;
 // use Root\App\Tools\CsvReorderColumns;
 // use Root\App\Tools\CsvRemoveColumn;
 // use Root\App\Tools\Tool1;
 
 
 $inputFile = 'input.csv';
+$inputFile2 = 'input2.csv';
 $outputFile = 'output.csv';
 $headerRow = ['TASK', 'NAME', 'EMAIL', 'STATUS', 'CREATED_AT', 'UPDATED_AT', 'DELETED_AT', "FILED1", "FILED2"];
 $headerId = ["ID"];
@@ -59,31 +61,11 @@ try {
     echo $e->getMessage();
 }
 echo "Done truncate columns.<br>";
-// $tool1 = new Tool1();
-// try {
-//     $tool1->prependHeaderRow(inputFile: $inputFile, outputFile: $outputFile, headerRow: $headerRow);
-// } catch (Exception $e) {
-//     echo $e->getMessage();
-// }
-// echo "Done prepend header.<br>";
 
-// try {
-//     $tool1->addIndexingColumn($inputFile, $outputFile, $headerId);
-// } catch (Exception $e) {
-//     echo $e->getMessage();
-// }
-// echo 'Done index column';
-
-// try {
-//     $tool1->reorderColumns($inputFile, $outputFile, $reorder);
-// } catch (Exception $e) {
-//     echo $e->getMessage();
-// }
-// echo "Done reorder columns. <br>";
-
-// try {
-//     $tool1->removeColumn($inputFile, $outputFile, $remove);
-// } catch (Exception $e) {
-//     echo $e->getMessage();
-// }
-// echo "Done remove columns.";
+$sixth = new CsvReformatDate('Y-m-d');
+try {
+    $sixth->process($inputFile2, "outputReformatDate.csv");
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+echo "Done reformat date.<br>";
