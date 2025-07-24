@@ -9,6 +9,7 @@ use Root\App\Tools\CsvColumnRemoval;
 use Root\App\Tools\CsvReorderColumn;
 use Root\App\Tools\CsvTruncateColumn;
 use Root\App\Tools\CsvReformatDate;
+use Root\App\Tools\CsvMergeFiles;
 // use Root\App\Tools\CsvReorderColumns;
 // use Root\App\Tools\CsvRemoveColumn;
 // use Root\App\Tools\Tool1;
@@ -69,3 +70,11 @@ try {
     echo $e->getMessage();
 }
 echo "Done reformat date.<br>";
+
+$seventh = new CsvMergeFiles();
+try {
+    $seventh->mergeCsv($inputFile, $inputFile2, "outputMerge.csv");
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+echo "Done merge files.<br>";
