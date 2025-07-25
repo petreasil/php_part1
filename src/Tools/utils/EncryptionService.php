@@ -19,8 +19,13 @@ class EncryptionService
 
     public function encrypt(string $data): string|false
     {
+        $key = openssl_pkey_get_public($this->publicKey);
+
+        if ($key === false) {
+            throw new \RuntimeException("Invalid public key.");
+        }
         $encrypted = '';
-        if (!openssl_public_encrypt($data, $encrypted, $this->publicKey)) {
+        if (!openssl_public_encrypt($data, $encrypted, $key, OPENSSL_PKCS1_OAEP_PADDING)) {
 
             return false;
         }

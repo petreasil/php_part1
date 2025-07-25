@@ -6,21 +6,21 @@ class CsvSecurityColumns extends CsvProcessor
 {
     private array $columnsToEncrypt = [];
 
-
-    public function __construct(private EncryptionService $encryptionService, array $columnsToEncrypt = [], private string $publicKey, private string $privateKey)
+    public function __construct(private EncryptionService $encryptionService, array $columnsToEncrypt = [])
     {
         $this->columnsToEncrypt = $columnsToEncrypt;
-        $this->encryptionService->setPublicKey($this->publicKey);
-        $this->encryptionService->setPrivateKey($this->privateKey);
     }
     public function process(string $inputFile, string $outputFile): void
     {
         $rows = $this->readCsv($inputFile);
-        $resultRows = [];
+        $header = array_shift($rows);
+        $headerIndexMap = array_flip($header);
+        $resultRows = [$header];
         foreach ($rows as $row) {
             $newRow = [];
             foreach ($row as $key => $cell) {
-                $newRow[] = in_array($key, $this->columnsToEncrypt) ? $this->encryptionService->encrypt($cell) : $cell;
+                $columnName = $header[$key];
+                $newRow[] = in_array($columnName, $this->columnsToEncrypt) ? $this->encryptionService->encrypt($cell) : $cell;
             }
             $resultRows[] = $newRow;
         }

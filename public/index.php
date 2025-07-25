@@ -10,6 +10,8 @@ use Root\App\Tools\CsvReorderColumn;
 use Root\App\Tools\CsvTruncateColumn;
 use Root\App\Tools\CsvReformatDate;
 use Root\App\Tools\CsvMergeFiles;
+use Root\App\Tools\CsvSecurityColumns;
+use Root\App\Tools\utils\EncryptionService;
 // use Root\App\Tools\CsvReorderColumns;
 // use Root\App\Tools\CsvRemoveColumn;
 // use Root\App\Tools\Tool1;
@@ -22,6 +24,7 @@ $headerRow = ['TASK', 'NAME', 'EMAIL', 'STATUS', 'CREATED_AT', 'UPDATED_AT', 'DE
 $headerId = ["ID"];
 $reorder = ['DELETED_AT', "FILED1", "FILED2", 'TASK', 'NAME', 'EMAIL', 'STATUS', 'CREATED_AT', 'UPDATED_AT',];
 $remove = ["FILED1", "FILED2"];
+$columnsToEncrypt = ["FILED2", "FILED2"];
 
 //keys for encryption
 
@@ -96,3 +99,13 @@ try {
     echo $e->getMessage();
 }
 echo "Done merge files.<br>";
+
+$encryptionService = new EncryptionService($publicKey, $privateKey);
+
+$eighth = new CsvSecurityColumns($encryptionService, $columnsToEncrypt, );
+try {
+    $eighth->process($inputFile, "outputSecurity.csv");
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+echo "Done security columns.<br>";
