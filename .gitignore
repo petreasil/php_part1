@@ -1,4 +1,4 @@
 .idea
 /vendor/
-.pem
-public/.pem
+*.pem
+public/*.pem
