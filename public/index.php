@@ -24,7 +24,7 @@ $headerRow = ['TASK', 'NAME', 'EMAIL', 'STATUS', 'CREATED_AT', 'UPDATED_AT', 'DE
 $headerId = ["ID"];
 $reorder = ['DELETED_AT', "FILED1", "FILED2", 'TASK', 'NAME', 'EMAIL', 'STATUS', 'CREATED_AT', 'UPDATED_AT',];
 $remove = ["FILED1", "FILED2"];
-$columnsToEncrypt = ["FILED2", "FILED2"];
+$columnsToEncrypt = ["FILED1", "FILED2"];
 
 //keys for encryption
 

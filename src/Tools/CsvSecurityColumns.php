@@ -20,7 +20,11 @@ class CsvSecurityColumns extends CsvProcessor
             $newRow = [];
             foreach ($row as $key => $cell) {
                 $columnName = $header[$key];
-                $newRow[] = in_array($columnName, $this->columnsToEncrypt) ? $this->encryptionService->encrypt($cell) : $cell;
+                if (in_array($columnName, $this->columnsToEncrypt)) {
+                    $newRow[] = $this->encryptionService->encrypt($cell);
+                } else {
+                    $newRow[] = $cell;
+                }
             }
             $resultRows[] = $newRow;
         }
