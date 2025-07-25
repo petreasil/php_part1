@@ -105,6 +105,7 @@ $encryptionService = new EncryptionService($publicKey, $privateKey);
 $eighth = new CsvSecurityColumns($encryptionService, $columnsToEncrypt, );
 try {
     $eighth->process($inputFile, "outputSecurity.csv");
+    $eighth->decryptProcess("outputSecurity.csv", "outputSecurityDecrypt.csv");
 } catch (Exception $e) {
     echo $e->getMessage();
 }

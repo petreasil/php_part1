@@ -2,7 +2,7 @@
 namespace Root\App\Tools;
 use Exception;
 use Root\App\Tools\utils\EncryptionService;
-class CsvSecurityColumns extends CsvProcessor
+class CsvSecurityColumns extends CsvProcessor implements SecurityProcessorInterface
 {
     private array $columnsToEncrypt = [];
 
@@ -30,6 +30,27 @@ class CsvSecurityColumns extends CsvProcessor
         }
         $this->writeCsv($outputFile, $resultRows);
 
+    }
+
+    public function decryptProcess(string $inputFile, string $outputFile): void
+    {
+        $rows = $this->readCsv($inputFile);
+        $header = array_shift($rows);
+
+        $resultRows = [$header];
+        foreach ($rows as $row) {
+            $newRow = [];
+            foreach ($row as $key => $cell) {
+                $columnName = $header[$key];
+                if (in_array($columnName, $this->columnsToEncrypt)) {
+                    $newRow[] = $this->encryptionService->decrypt($cell);
+                } else {
+                    $newRow[] = $cell;
+                }
+            }
+            $resultRows[] = $newRow;
+        }
+        $this->writeCsv($outputFile, $resultRows);
     }
 
 }

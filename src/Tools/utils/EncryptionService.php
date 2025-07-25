@@ -42,7 +42,7 @@ class EncryptionService
         }
 
         $decrypted = '';
-        if (!openssl_private_decrypt($decodedEncrypted, $decrypted, $this->privateKey)) {
+        if (!openssl_private_decrypt($decodedEncrypted, $decrypted, $this->privateKey, OPENSSL_PKCS1_OAEP_PADDING)) {
 
             return false;
         }
