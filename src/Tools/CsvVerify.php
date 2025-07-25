@@ -1,17 +1,15 @@
 <?php
 namespace Root\App\Tools;
-use Exception;
 use Root\App\Tools\utils\SignCsvService;
 
-class CsvSignColumn extends CsvProcessor
+class CsvVerify extends CsvProcessor
 {
     private SignCsvService $signCsvService;
-    private array $columnsToSign;
-
-    public function __construct(SignCsvService $signCsvService, array $columnsToSign = [])
+    private array $columnsToVerify;
+    public function __construct(SignCsvService $signCsvService, array $columnsToVerify = [])
     {
         $this->signCsvService = $signCsvService;
-        $this->columnsToSign = $columnsToSign;
+        $this->columnsToVerify = $columnsToVerify;
     }
 
     public function process(string $inputFile, string $outputFile): void
@@ -23,8 +21,8 @@ class CsvSignColumn extends CsvProcessor
             $newRow = [];
             foreach ($row as $key => $cell) {
                 $columnName = $header[$key];
-                if (in_array($columnName, $this->columnsToSign)) {
-                    $newRow[] = $this->signCsvService->sign(implode(',', $row));
+                if (in_array($columnName, $this->columnsToVerify)) {
+                    $newRow[] = $this->signCsvService->verify(implode(',', $row), $cell);
                 } else {
                     $newRow[] = $cell;
                 }
@@ -33,5 +31,4 @@ class CsvSignColumn extends CsvProcessor
         }
         $this->writeCsv($outputFile, $resultRows);
     }
-
 }

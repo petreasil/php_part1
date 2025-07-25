@@ -15,6 +15,7 @@ use Root\App\Tools\CsvSecurityEncrypt;
 use Root\App\Tools\utils\EncryptionService;
 use Root\App\Tools\utils\SignCsvService;
 use Root\App\Tools\CsvSignColumn;
+use Root\App\Tools\CsvVerify;
 // use Root\App\Tools\CsvReorderColumns;
 // use Root\App\Tools\CsvRemoveColumn;
 // use Root\App\Tools\Tool1;
@@ -50,9 +51,10 @@ file_put_contents("public_key.pem", $publicKey);
 //SIGN CSV
 
 $secretKey = "secretKey";
-$columnsToSign = ["FILED1", "FILED2"];
+$columnsToSign = ["DELETED_AT", "FILED1", "FILED2"];
 $sign = new SignCsvService($secretKey);
 $neihth = new CsvSignColumn($sign, $columnsToSign);
+$verify = new CsvVerify($sign, $columnsToSign);
 
 try {
     $neihth->process($inputFile, "outputSign.csv");
@@ -60,6 +62,13 @@ try {
     echo $e->getMessage();
 }
 echo "Done sign csv.<br>";
+
+try {
+    $verify->process($inputFile, "outputVerify.csv");
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+echo "Done verify csv.<br>";
 
 $first = new CsvPrependHeader($headerRow);
 try {
