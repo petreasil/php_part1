@@ -1,27 +1,30 @@
 <?php
 namespace Root\App\Tools;
 use Exception;
-use Root\App\Tools\utils\EncryptionService;
-class CsvSecurityColumns extends CsvProcessor implements SecurityProcessorInterface
-{
-    private array $columnsToEncrypt = [];
+use Root\App\Tools\utils\SignCsvService;
 
-    public function __construct(private EncryptionService $encryptionService, array $columnsToEncrypt = [])
+class CsvSignColumn extends CsvProcessor
+{
+    private SignCsvService $signCsvService;
+    private array $columnsToSign;
+
+    public function __construct(SignCsvService $signCsvService, array $columnsToSign = [])
     {
-        $this->columnsToEncrypt = $columnsToEncrypt;
+        $this->signCsvService = $signCsvService;
+        $this->columnsToSign = $columnsToSign;
     }
+
     public function process(string $inputFile, string $outputFile): void
     {
         $rows = $this->readCsv($inputFile);
         $header = array_shift($rows);
-        $headerIndexMap = array_flip($header);
         $resultRows = [$header];
         foreach ($rows as $row) {
             $newRow = [];
             foreach ($row as $key => $cell) {
                 $columnName = $header[$key];
-                if (in_array($columnName, $this->columnsToEncrypt)) {
-                    $newRow[] = $this->encryptionService->encrypt($cell);
+                if (in_array($columnName, $this->columnsToSign)) {
+                    $newRow[] = $this->signCsvService->sign(implode(',', $row));
                 } else {
                     $newRow[] = $cell;
                 }
@@ -29,21 +32,22 @@ class CsvSecurityColumns extends CsvProcessor implements SecurityProcessorInterf
             $resultRows[] = $newRow;
         }
         $this->writeCsv($outputFile, $resultRows);
-
     }
 
-    public function decryptProcess(string $inputFile, string $outputFile): void
+    public function processVerify(string $inputFile, string $outputFile): void
     {
         $rows = $this->readCsv($inputFile);
         $header = array_shift($rows);
-
         $resultRows = [$header];
         foreach ($rows as $row) {
             $newRow = [];
             foreach ($row as $key => $cell) {
                 $columnName = $header[$key];
-                if (in_array($columnName, $this->columnsToEncrypt)) {
-                    $newRow[] = $this->encryptionService->decrypt($cell);
+                if (in_array($columnName, $this->columnsToSign)) {
+                    $signatureIndex = array_search($columnName, $this->columnsToSign);
+                    $dataToVerify = $row[$key];
+                    $expectedSignature = $row[$this->columnsToSign[0]];
+                    $newRow[] = $this->signCsvService->verify($cell);
                 } else {
                     $newRow[] = $cell;
                 }
@@ -52,5 +56,4 @@ class CsvSecurityColumns extends CsvProcessor implements SecurityProcessorInterf
         }
         $this->writeCsv($outputFile, $resultRows);
     }
-
 }

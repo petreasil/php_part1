@@ -10,8 +10,11 @@ use Root\App\Tools\CsvReorderColumn;
 use Root\App\Tools\CsvTruncateColumn;
 use Root\App\Tools\CsvReformatDate;
 use Root\App\Tools\CsvMergeFiles;
-use Root\App\Tools\CsvSecurityColumns;
+use Root\App\Tools\CsvSecurityDecrypt;
+use Root\App\Tools\CsvSecurityEncrypt;
 use Root\App\Tools\utils\EncryptionService;
+use Root\App\Tools\utils\SignCsvService;
+use Root\App\Tools\CsvSignColumn;
 // use Root\App\Tools\CsvReorderColumns;
 // use Root\App\Tools\CsvRemoveColumn;
 // use Root\App\Tools\Tool1;
@@ -43,6 +46,20 @@ $publicKey = $keyDetails["key"];
 file_put_contents("private_key.pem", $privateKey);
 file_put_contents("public_key.pem", $publicKey);
 //end keys
+
+//SIGN CSV
+
+$secretKey = "secretKey";
+$columnsToSign = ["FILED1", "FILED2"];
+$sign = new SignCsvService($secretKey);
+$neihth = new CsvSignColumn($sign, $columnsToSign);
+
+try {
+    $neihth->process($inputFile, "outputSign.csv");
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+echo "Done sign csv.<br>";
 
 $first = new CsvPrependHeader($headerRow);
 try {
@@ -102,11 +119,19 @@ echo "Done merge files.<br>";
 
 $encryptionService = new EncryptionService($publicKey, $privateKey);
 
-$eighth = new CsvSecurityColumns($encryptionService, $columnsToEncrypt, );
+$eighth = new CsvSecurityEncrypt($encryptionService, $columnsToEncrypt, );
 try {
     $eighth->process($inputFile, "outputSecurity.csv");
-    $eighth->decryptProcess("outputSecurity.csv", "outputSecurityDecrypt.csv");
+
 } catch (Exception $e) {
     echo $e->getMessage();
 }
-echo "Done security columns.<br>";
+echo "Done encrypt columns.<br>";
+
+try {
+    $tenth = new CsvSecurityDecrypt($encryptionService);
+    $tenth->process("outputSecurity.csv", "outputSecurityDecrypt.csv");
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+echo "Done decrypt columns.<br>";
