@@ -16,6 +16,8 @@ use Root\App\Tools\utils\EncryptionService;
 use Root\App\Tools\utils\SignCsvService;
 use Root\App\Tools\CsvSignColumn;
 use Root\App\Tools\CsvVerify;
+use Root\App\Tools\CsvInnerJoin;
+
 // use Root\App\Tools\CsvReorderColumns;
 // use Root\App\Tools\CsvRemoveColumn;
 // use Root\App\Tools\Tool1;
@@ -144,3 +146,12 @@ try {
     echo $e->getMessage();
 }
 echo "Done decrypt columns.<br>";
+
+
+$eleventh = new CsvInnerJoin(["email"]);
+try {
+    $eleventh->join($inputFile, $inputFile2, "outputInnerJoin.csv");
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+echo "Done inner join.<br>";

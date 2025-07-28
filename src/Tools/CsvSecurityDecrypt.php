@@ -1,7 +1,7 @@
 <?php
 namespace Root\App\Tools;
 use Exception;
-use Root\App\Tools\utils\EncryptionService;
+use Root\App\Tools\Utils\EncryptionService;
 
 class CsvSecurityDecrypt extends CsvProcessor
 {
