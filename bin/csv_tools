@@ -1,0 +1,148 @@
+#!/usr/bin/env php
+<?php
+require_once __DIR__ . '/../vendor/autoload.php';
+use Root\App\Tools\CsvProcessor;
+use Root\App\Tools\CsvPrependHeader;
+use Root\App\Tools\CsvAddIndexColumn;
+use Root\App\Tools\CsvColumnRemoval;
+use Root\App\Tools\CsvReorderColumn;
+use Root\App\Tools\CsvTruncateColumn;
+use Root\App\Tools\CsvReformatDate;
+use Root\App\Tools\CsvMergeFiles;
+use Root\App\Tools\CsvSecurityDecrypt;
+use Root\App\Tools\CsvSecurityEncrypt;
+use Root\App\Tools\utils\EncryptionService;
+use Root\App\Tools\utils\SignCsvService;
+use Root\App\Tools\Utils\HttpService;
+use Root\App\Tools\CsvSignColumn;
+use Root\App\Tools\CsvVerify;
+use Root\App\Tools\CsvInnerJoin;
+use Root\App\Tools\CsvSelect;
+use Root\App\Tools\CsvTranslate;
+
+$argv = $_SERVER['argv'];
+$argc = $_SERVER['argc'];
+
+if ($argc < 2) {
+    echo "Usage: ./csv_tool <command> [arguments]" . PHP_EOL;
+    exit(1);
+}
+
+$command = $argv[1];
+
+// Basic router
+switch ($command) {
+    case 'add-header':
+        if ($argc < 4) {
+            echo "Usage: add-header <input.csv> <output.csv>" . PHP_EOL;
+            exit(1);
+        }
+        $input = $argv[2];
+        $output = $argv[3];
+        $header = ['TASK', 'NAME', 'EMAIL', 'STATUS', 'CREATED_AT', 'UPDATED_AT', 'DELETED_AT', "FILED1", "FILED2"];
+        (new CsvPrependHeader($header))->process($input, $output);
+        echo "Header prepended to $output" . PHP_EOL;
+        break;
+
+    case 'add-index':
+        if ($argc < 4) {
+            echo "Usage: add-index <input.csv> <output.csv>" . PHP_EOL;
+            exit(1);
+        }
+        $input = $argv[2];
+        $output = $argv[3];
+        (new CsvAddIndexColumn(['ID']))->process($input, $output);
+        echo "Index column added to $output" . PHP_EOL;
+        break;
+
+    case 'remove-columns':
+        if ($argc < 5) {
+            echo "Usage: remove-columns <input.csv> <output.csv> <col1,col2,...>" . PHP_EOL;
+            exit(1);
+        }
+        $input = $argv[2];
+        $output = $argv[3];
+        $columns = explode(',', $argv[4]);
+        (new CsvColumnRemoval($columns))->process($input, $output);
+        echo "Columns removed in $output" . PHP_EOL;
+        break;
+
+    case 'reorder-columns':
+        if ($argc < 5) {
+            echo "Usage: reorder-columns <input.csv> <output.csv> <col1,col2,...>" . PHP_EOL;
+            exit(1);
+        }
+        $input = $argv[2];
+        $output = $argv[3];
+        $order = explode(',', $argv[4]);
+        (new CsvReorderColumn($order))->process($input, $output);
+        echo "Columns reordered in $output" . PHP_EOL;
+        break;
+
+    case 'truncate-columns':
+        if ($argc < 5) {
+            echo "Usage: truncate-columns <input.csv> <output.csv> <maxLength>" . PHP_EOL;
+            exit(1);
+        }
+        $input = $argv[2];
+        $output = $argv[3];
+        $length = (int) $argv[4];
+        (new CsvTruncateColumn($length))->process($input, $output);
+        echo "Columns truncated in $output" . PHP_EOL;
+        break;
+
+    case 'reformat-date':
+        if ($argc < 5) {
+            echo "Usage: reformat-date <input.csv> <output.csv> <format>" . PHP_EOL;
+            exit(1);
+        }
+        $input = $argv[2];
+        $output = $argv[3];
+        $format = $argv[4];
+        (new CsvReformatDate($format))->process($input, $output);
+        echo "Dates reformatted in $output" . PHP_EOL;
+        break;
+
+    case 'translate':
+        if ($argc < 5) {
+            echo "Usage: translate <input.csv> <output.csv> <col1,col2,...>" . PHP_EOL;
+            exit(1);
+        }
+        $input = $argv[2];
+        $output = $argv[3];
+        $columns = explode(',', $argv[4]);
+        $http = new HttpService();
+        (new CsvTranslate($http, $columns))->process($input, $output);
+        echo "Translated columns in $output" . PHP_EOL;
+        break;
+
+    case 'sign':
+        if ($argc < 5) {
+            echo "Usage: sign <input.csv> <output.csv> <col1,col2,...>" . PHP_EOL;
+            exit(1);
+        }
+        $input = $argv[2];
+        $output = $argv[3];
+        $columns = explode(',', $argv[4]);
+        $signService = new SignCsvService('secretKey');
+        (new CsvSignColumn($signService, $columns))->process($input, $output);
+        echo "Signed columns in $output" . PHP_EOL;
+        break;
+
+    case 'verify':
+        if ($argc < 5) {
+            echo "Usage: verify <input.csv> <output.csv> <col1,col2,...>" . PHP_EOL;
+            exit(1);
+        }
+        $input = $argv[2];
+        $output = $argv[3];
+        $columns = explode(',', $argv[4]);
+        $signService = new SignCsvService('secretKey');
+        (new CsvVerify($signService, $columns))->process($input, $output);
+        echo "Verified columns in $output" . PHP_EOL;
+        break;
+
+    default:
+        echo "Unknown command: $command" . PHP_EOL;
+        exit(1);
+}
