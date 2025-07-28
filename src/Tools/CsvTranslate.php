@@ -79,7 +79,7 @@ class CsvTranslate extends CsvProcessor
         $response = $this->httpService->get($url);
 
         $data = json_decode($response, true);
-        var_dump($data);
+
         if (!isset($data['destination-text'])) {
             throw new Exception("Translation API failed or returned invalid data: $response");
         }
