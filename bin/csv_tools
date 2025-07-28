@@ -33,13 +33,14 @@ $command = $argv[1];
 // Basic router
 switch ($command) {
     case 'add-header':
-        if ($argc < 4) {
+        if ($argc < 5) {
             echo "Usage: add-header <input.csv> <output.csv>" . PHP_EOL;
             exit(1);
         }
         $input = $argv[2];
         $output = $argv[3];
-        $header = ['TASK', 'NAME', 'EMAIL', 'STATUS', 'CREATED_AT', 'UPDATED_AT', 'DELETED_AT', "FILED1", "FILED2"];
+        $headers = explode(',', $argv[4]);
+        // $header = ['TASK', 'NAME', 'EMAIL', 'STATUS', 'CREATED_AT', 'UPDATED_AT', 'DELETED_AT', "FILED1", "FILED2"];
         (new CsvPrependHeader($header))->process($input, $output);
         echo "Header prepended to $output" . PHP_EOL;
         break;
