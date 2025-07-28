@@ -14,9 +14,12 @@ use Root\App\Tools\CsvSecurityDecrypt;
 use Root\App\Tools\CsvSecurityEncrypt;
 use Root\App\Tools\utils\EncryptionService;
 use Root\App\Tools\utils\SignCsvService;
+use Root\App\Tools\Utils\HttpService;
 use Root\App\Tools\CsvSignColumn;
 use Root\App\Tools\CsvVerify;
 use Root\App\Tools\CsvInnerJoin;
+use Root\App\Tools\CsvSelect;
+use Root\App\Tools\CsvTranslate;
 
 // use Root\App\Tools\CsvReorderColumns;
 // use Root\App\Tools\CsvRemoveColumn;
@@ -25,6 +28,7 @@ use Root\App\Tools\CsvInnerJoin;
 
 $inputFile = 'input.csv';
 $inputFile2 = 'input2.csv';
+$inputFile3 = 'input3.csv';
 $outputFile = 'output.csv';
 $headerRow = ['TASK', 'NAME', 'EMAIL', 'STATUS', 'CREATED_AT', 'UPDATED_AT', 'DELETED_AT', "FILED1", "FILED2"];
 $headerId = ["ID"];
@@ -155,3 +159,18 @@ try {
     echo $e->getMessage();
 }
 echo "Done inner join.<br>";
+
+$csvSelect = new CsvSelect();
+$csvSelect
+    ->selectColumns(['CREATED_AT', 'UPDATED_AT'])
+    ->where('CREATED_AT', '>', 100)
+    ->where('UPDATED_AT', '>', 20)
+    ->process($inputFile, 'outputSelect.csv');
+$httpService = new HttpService();
+$csvTranslate = new CsvTranslate($httpService, ["gender"]);
+try {
+    $csvTranslate->process($inputFile3, "outputTranslate.csv");
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+echo "Done translate columns.<br>";
