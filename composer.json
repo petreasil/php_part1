@@ -11,7 +11,11 @@
         "symfony/framework-bundle": "^7.3",
         "symfony/console": "^7.3",
         "symfony/yaml": "^7.3",
-        "symfony/runtime": "^7.3"
+        "symfony/runtime": "^7.3",
+        "webmozart/assert": "^1.11",
+        "php-ds/php-ds": "^1.7",
+        "illuminate/collections": "^12.21",
+        "ext-openssl": "*"
     },
     "config": {
         "allow-plugins": {
