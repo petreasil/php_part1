@@ -1,0 +1,35 @@
+{
+    "name": "root/app",
+    "description": "php internship",
+    "autoload": {
+        "psr-4": {
+            "Silviu\\CsvTools\\": "src/"
+        }
+    },
+    "require": {
+        "symfony/flex": "^2.8",
+        "symfony/framework-bundle": "^7.3",
+        "symfony/console": "^7.3",
+        "symfony/yaml": "^7.3",
+        "symfony/runtime": "^7.3"
+    },
+    "config": {
+        "allow-plugins": {
+            "symfony/flex": true,
+            "symfony/runtime": true
+        }
+    },
+    "scripts": {
+        "auto-scripts": {
+            "cache:clear": "symfony-cmd",
+            "assets:install %PUBLIC_DIR%": "symfony-cmd"
+        }
+    },
+    "require-dev": {
+        "symfony/monolog-bundle": "^3.0",
+        "symfony/debug-bundle": "^7.3",
+        "symfony/stopwatch": "^7.3",
+        "symfony/web-profiler-bundle": "^7.3",
+        "symfony/maker-bundle": "^1.64"
+    }
+}
