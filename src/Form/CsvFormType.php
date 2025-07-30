@@ -7,13 +7,28 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Validator\Constraints\File;
 
 class CsvFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('file', FileType::class)
+            ->add('file', FileType::class, [
+                'label' => 'CSV File',
+                'constraints' => [
+                    new File([
+                        'maxSize' => '1024k',
+                        'mimeTypes' => [
+                            'text/csv',
+                            'text/plain',
+                            'application/csv',
+                            'application/x-csv',
+                        ],
+                        'mimeTypesMessage' => 'Please upload a valid CSV file',
+                    ])
+                ],
+            ])
             ->add('submit', SubmitType::class, ['label' => 'Upload']);
     }
 
