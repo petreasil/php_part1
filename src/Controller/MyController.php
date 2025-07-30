@@ -5,6 +5,7 @@ namespace Silviu\CsvTools\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -18,7 +19,7 @@ final class MyController extends AbstractController
         ]);
     }
     #[Route('/test', name: 'app_test')]
-    public function jsonroute(): JsonResponse
+    public function second(): JsonResponse
     {
         $data = ['message' => 'This is a JSON response from /test',
             'status' => 'success',
@@ -27,7 +28,7 @@ final class MyController extends AbstractController
 
     }
     #[Route('/test/{id}', name: 'app_single',requirements: ['id' => '\d+'])]
-    public function test_params(int $id): Response
+    public function test(int $id): Response
     {
         if($id === 2){
             sleep(2);
@@ -35,5 +36,12 @@ final class MyController extends AbstractController
         }
         return new Response("Wait");
 
+    }
+
+    #[Route('/number/{id}', name: 'number_route', requirements: ['id' => '\d+'])]
+    public function show(int $id): Response
+    {
+
+        return new Response("The ID is $id");
     }
 }
