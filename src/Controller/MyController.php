@@ -8,14 +8,24 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Silviu\CsvTools\Form\CsvFormType;
 
 final class MyController extends AbstractController
 {
     #[Route('/', name: 'app_my')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
+        $form = $this->createForm(CsvFormType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $file = $form->get('file')->getData();
+            //transfrom file and and return a link to download transfromed file
+            $this->addFlash('success', 'File uploaded successfully');
+        }
         return $this->render('my/index.html.twig', [
-            'controller_name' => 'MyController',
+
+            'form' => $form,
         ]);
     }
     #[Route('/test', name: 'app_test')]

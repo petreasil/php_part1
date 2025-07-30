@@ -9,9 +9,10 @@
     <h1>Csv Application </h1>
     <h2>uplod csv </h2>
 
-    <ul>
-        <li>Your controller is located at <code>/srv/app/src/Controller/MyController.php</code></li>
-        <li>Your template is at <code>/srv/app/templates/my/index.html.twig</code></li>
-    </ul>
+    {{ form_start(form) }}
+    {{form_row(form.file)}}
+    {{form_row(form.submit)}}
+    {{form_end(form)}}
+
 </div>
 {% endblock %}
