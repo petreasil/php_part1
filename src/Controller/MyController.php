@@ -21,18 +21,20 @@ final class MyController extends AbstractController
     #[Route('/test', name: 'app_test')]
     public function second(): JsonResponse
     {
-        $data = ['message' => 'This is a JSON response from /test',
+        $data = [
+            'message' => 'This is a JSON response from /test',
             'status' => 'success',
-            'timestamp' => (new \DateTime())->format('Y-m-d H:i:s')];
+            'timestamp' => (new \DateTime())->format('Y-m-d H:i:s')
+        ];
         return new JsonResponse($data);
 
     }
-    #[Route('/test/{id}', name: 'app_single',requirements: ['id' => '\d+'])]
+    #[Route('/test/{id}', name: 'app_single', requirements: ['id' => '\d+'])]
     public function test(int $id): Response
     {
-        if($id === 2){
+        if ($id === 2) {
             sleep(2);
-            return new RedirectResponse("https://google.com",);
+            return new RedirectResponse("https://google.com", );
         }
         return new Response("Wait");
 
@@ -41,7 +43,7 @@ final class MyController extends AbstractController
     #[Route('/number/{id}', name: 'number_route', requirements: ['id' => '\d+'])]
     public function show(int $id): Response
     {
-
         return new Response("The ID is $id");
     }
+
 }
